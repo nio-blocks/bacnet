@@ -18,6 +18,15 @@
         "description": "If the value being read is inside an array, optionally specify the index of the desired value.",
         "default": null
       },
+      "enrich": {
+        "title": "Signal Enrichment",
+        "type": "ObjectType",
+        "description": "Signal Enrichment\n  - *exclude_existing*: If checked (true), the attributes of the incoming signal will be excluded from the outgoing signal. If unchecked (false), the attributes of the incoming signal will be included in the outgoing signal.\n  - *enrich_field*: (hidden) The attribute on the signal to store the results from this block. If this is empty, the results will be merged onto the incoming signal. This is the default operation. Having this field allows a block to 'save' the results of an operation to a single field on an incoming signal and notify the enriched signal.",
+        "default": {
+          "enrich_field": "",
+          "exclude_existing": true
+        }
+      },
       "instance_num": {
         "title": "Object Instance Number",
         "type": "IntType",

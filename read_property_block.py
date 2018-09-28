@@ -12,12 +12,13 @@ from bacpypes.pdu import Address
 from bacpypes.primitivedata import Unsigned, ObjectIdentifier
 _root_logger.setLevel(_root_logger_level)
 from nio import Block, Signal
+from nio.block.mixins.enrich.enrich_signals import EnrichSignals
 from nio.properties import Property, IntProperty, StringProperty, \
                            VersionProperty
 from nio.util.threading import spawn
 
 
-class ReadProperty(Block):
+class ReadProperty(EnrichSignals, Block):
 
     address = StringProperty(title='Address',
                              default='<ip_address> [/<net_mask>] [:<port>]',
@@ -76,7 +77,7 @@ class ReadProperty(Block):
                                self.instance_num(signal),
                                self.property_id(signal),
                                self.array_index(signal))
-            signal_dict = {
+            new_signal_dict = {
                 self.results_field(signal): value,
                 'details': {
                     'address': self.address(signal),
@@ -87,7 +88,7 @@ class ReadProperty(Block):
                     
                 },
             }
-            new_signal = Signal(signal_dict)
+            new_signal = self.get_output_signal(new_signal_dict, signal)
             outgoing_signals.append(new_signal)
         self.notify_signals(outgoing_signals)
 

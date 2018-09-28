@@ -39,6 +39,9 @@ class TestReadProperty(NIOBlockTestCase):
             'property_id': 'some_property',
             'array_index': None,
             'results_field': 'some_results',
+            'enrich': {
+                'exclude_existing': False,
+            },
         }
         req_obj = mock_request.return_value = MagicMock()
         obj = mock_identifier.return_value = MagicMock()
@@ -81,6 +84,7 @@ class TestReadProperty(NIOBlockTestCase):
                     'instance_num': config['instance_num'],
                     'property_id': config['property_id'],
                     'array_index': config['array_index'],
+                'pi': 3.14,
                 },
             },
         )
