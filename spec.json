@@ -36,7 +36,7 @@
       "my_address": {
         "title": "My Address",
         "type": "StringType",
-        "description": "Address to bind to receive unicast messages from BACNet devices.",
+        "description": "Address to bind to receive responses from BACNet devices.",
         "default": "[[NIOHOST]]:47808"
       },
       "my_object_instance": {

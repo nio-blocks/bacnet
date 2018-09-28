@@ -10,7 +10,7 @@ Properties
   - *exclude_existing*: If checked (true), the attributes of the incoming signal will be excluded from the outgoing signal. If unchecked (false), the attributes of the incoming signal will be included in the outgoing signal.
   - *enrich_field*: (hidden) The attribute on the signal to store the results from this block. If this is empty, the results will be merged onto the incoming signal. This is the default operation. Having this field allows a block to 'save' the results of an operation to a single field on an incoming signal and notify the enriched signal.
 - **instance_num**: Which instance of the Object Type to read.
-- **my_address**: Address to bind to receive unicast messages from BACNet devices.
+- **my_address**: Address to bind to receive responses from BACNet devices.
 - **my_object_instance**: 22-bit integer unique to all devices on this network, used to create a 32-bit device `object_identifer`.
 - **my_vendor_id**: If you have an official BACNet Vendor ID put it here, otherwise use an arbitrary integer.
 - **object_type**: One of the standard BACNet Object Types (for example `analogValue`, note the use of camelCase capitalization without spaces). Vendor-defined custom-objects are not supported. Raises `ValueError` if not a recognized object type.
