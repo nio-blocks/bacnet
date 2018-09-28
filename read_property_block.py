@@ -1,0 +1,144 @@
+# bacpypes hijacks _root logger, take it back!
+import logging
+_root_logger = logging.getLogger()
+_root_logger_level = _root_logger.level
+from bacpypes.apdu import ReadPropertyRequest, ReadPropertyACK
+from bacpypes.app import BIPSimpleApplication
+from bacpypes.core import run, stop
+from bacpypes.iocb import IOCB
+from bacpypes.local.device import LocalDeviceObject
+from bacpypes.object import get_datatype
+from bacpypes.pdu import Address
+from bacpypes.primitivedata import Unsigned, ObjectIdentifier
+_root_logger.setLevel(_root_logger_level)
+from nio import Block, Signal
+from nio.properties import Property, IntProperty, StringProperty, \
+                           VersionProperty
+from nio.util.threading import spawn
+
+
+class ReadProperty(Block):
+
+    address = StringProperty(title='Address',
+                             default='<ip_address> [/<net_mask>] [:<port>]',
+                             order=10)
+    object_type = StringProperty(title='Object Type', order=11)
+    instance_num = IntProperty(title='Object Instance Number', order=12)
+    property_id = StringProperty(title='Property', order=13)
+    array_index = Property(title='Array Index (Optional)',
+                           allow_none=True,
+                           order=14)
+    results_field = StringProperty(title='Results Field',
+                                   default='value',
+                                   order=15)
+    my_address = StringProperty(title='My Address',
+                                default='[[NIOHOST]]:47808',
+                                order=20,
+                                advanced=True)
+    my_object_instance = IntProperty(title='My Object Instance',
+                                     default=1000,
+                                     order=21,
+                                     advanced=True)
+    my_vendor_id = IntProperty(title='My Vendor ID',
+                               default=1999,
+                               order=22,
+                               advanced=True)
+    version = VersionProperty('0.1.0')
+
+    def __init__(self):
+        super().__init__()
+        self.device = None
+        self.application = None
+        self.object_identifer = None
+        self._thread = None
+
+    def configure(self, context):
+        super().configure(context)
+        if self.my_object_instance() not in range(2**22 - 1):
+            raise ValueError('Object Instance must be 0 thru 4194302')
+        object_type = format(8, '08b')  # BACNet DeviceObject
+        object_instance = format(self.my_object_instance(), '08b')
+        self.object_identifer = int(object_type + object_instance, base=2)
+        self.device = LocalDeviceObject(objectIdentifier=self.object_identifer,
+                                        vendorIdentifier=self.my_vendor_id())
+        self.logger.debug('LocalDeviceObject created with objectIdentifier {}'
+                          .format(self.object_identifer))
+        self.application = BIPSimpleApplication(self.device, self.my_address())
+        self._thread = spawn(run)
+        self.logger.debug('BACNet/IP Application started at {}'\
+                          .format(self.my_address()))
+
+    def process_signals(self, signals):
+        outgoing_signals = []
+        for signal in signals:
+            value = self._read(self.address(signal),
+                               self.object_type(signal),
+                               self.instance_num(signal),
+                               self.property_id(signal),
+                               self.array_index(signal))
+            signal_dict = {
+                self.results_field(signal): value,
+                'details': {
+                    'address': self.address(signal),
+                    'object_type': self.object_type(signal),
+                    'instance_num': self.instance_num(signal),
+                    'property_id': self.property_id(signal),
+                    'array_index': self.array_index(signal),
+                    
+                },
+            }
+            new_signal = Signal(signal_dict)
+            outgoing_signals.append(new_signal)
+        self.notify_signals(outgoing_signals)
+
+    def stop(self):
+        self.logger.debug('Stopping application at {}'\
+                          .format(self.my_address()))
+        stop()
+        self._thread.join()
+        super().stop()
+
+    def _read(self, address, object_type, instance_num, property_id, index):
+        object_id = '{}:{}'.format(object_type, instance_num)
+        object_id = ObjectIdentifier(object_id).value
+        datatype = get_datatype(object_id[0], property_id)
+        if not datatype:
+            raise ValueError('Invalid property {} for object {}'\
+                             .format(property_id, object_id))
+        request = ReadPropertyRequest(objectIdentifier=object_id,
+                                      propertyIdentifier=property_id)
+        if index is not None:
+            request.propertyArrayIndex = index
+            idx_str = '[{}]'.format(index)
+        else:
+            idx_str = ''
+        request.pduDestination = Address(address)
+        iocb = IOCB(request)
+        self.application.request_io(iocb)
+        self.logger.debug('Request for {}:{}{} sent to {}'\
+                          .format(object_type, instance_num, idx_str, address))
+        iocb.wait()
+        if iocb.ioError:
+            raise Exception(iocb.ioError)
+        elif iocb.ioResponse:
+            apdu = iocb.ioResponse
+            if not isinstance(apdu, ReadPropertyACK):
+                raise Exception('Expected ReadPropertyACK, got {}'\
+                                .format(apdu.__class__.__name__))
+            datatype = get_datatype(apdu.objectIdentifier[0],
+                                    apdu.propertyIdentifier)
+            if not datatype:
+                raise TypeError('Unknown datatype in response')
+            if apdu.propertyArrayIndex is not None and \
+                    issubclass(datatype, Array):
+                # special case for arrays
+                if apdu.propertyArrayIndex == 0:
+                    value = apdu.propertyValue.cast_out(Unsigned)
+                else:
+                    value = apdu.propertyValue.cast_out(datatype.subtype)
+            else:
+                value = apdu.propertyValue.cast_out(datatype)
+            return value
+        else:
+            raise ValueError('Received an empty response, '\
+                             'this really shouldn\'t have happened.')

@@ -1,40 +1,76 @@
 {
-  "namespace/BlockName": {
-    "version": "1.0.0",
-    "description": "Description of the block.",
+  "nio/ReadProperty": {
+    "version": "0.1.0",
+    "description": "Read properties from a BACNet/IP device. This block does not respond to any `whois` nor data-sharing requests. For every signal processed, a new requst is made to the target device and a single value read.",
+    "categories": [
+      "Hardware"
+    ],
     "properties": {
-      "<property1>": {
-        "description": "Required description of the property"
+      "address": {
+        "title": "Address",
+        "type": "StringType",
+        "description": "A string of the IP address (optional subnet mask and port number) of target device. For example, `192.168.100.100/24:47808`. Hostnames are not supported, raises `ValueError` if the supplied address cannot be parsed.",
+        "default": "<ip_address> [/<net_mask>] [:<port>]"
       },
-      "<property2>": {
-        "default": "Optional metadata with any key.",
-        "description": "Required description of the property"
+      "array_index": {
+        "title": "Array Index (Optional)",
+        "type": "Type",
+        "description": "If the value being read is inside an array, optionally specify the index of the desired value.",
+        "default": null
+      },
+      "instance_num": {
+        "title": "Object Instance Number",
+        "type": "IntType",
+        "description": "Which instance of the Object Type to read.",
+        "default": null
+      },
+      "my_address": {
+        "title": "My Address",
+        "type": "StringType",
+        "description": "Address to bind to receive unicast messages from BACNet devices.",
+        "default": "[[NIOHOST]]:47808"
+      },
+      "my_object_instance": {
+        "title": "My Object Instance",
+        "type": "IntType",
+        "description": "22-bit integer unique to all devices on this network, used to create a 32-bit device `object_identifer`.",
+        "default": 1000
+      },
+      "my_vendor_id": {
+        "title": "My Vendor ID",
+        "type": "IntType",
+        "description": "If you have an official BACNet Vendor ID put it here, otherwise use an arbitrary integer.",
+        "default": 1999
+      },
+      "object_type": {
+        "title": "Object Type",
+        "type": "StringType",
+        "description": "One of the standard BACNet Object Types (for example `analogValue`, note the use of camelCase capitalization without spaces). Vendor-defined custom-objects are not supported. Raises `ValueError` if not a recognized object type.",
+        "default": null
+      },
+      "property_id": {
+        "title": "Property",
+        "type": "StringType",
+        "description": "One of the defined Properties for this object type. Raises `ValueError` if not a valid property for this type.",
+        "default": null
+      },
+      "results_field": {
+        "title": "Results Field",
+        "type": "StringType",
+        "description": "Attribute of the outgoing signal to store the value read from the target device.",
+        "default": "value"
       }
     },
     "inputs": {
-      "<input1 | default>": {
-        "description": "Required description of the input"
-      },
-      "<input2>": {
-        "description": "Required description of the input"
+      "default": {
+        "description": "Any list of Signals, one property is read for each signal."
       }
     },
     "outputs": {
-      "<output1 | default>": {
-        "description": "Required description of the output"
-      },
-      "<output2>": {
-        "description": "Required description of the output"
+      "default": {
+        "description": "The same list of signals, enriched with the attribute defined by `results_field`, containing the result of this request, and key:value pairs in `details` describing the request."
       }
     },
-    "commands": {
-      "<command1>": {
-        "description": "Required description of the command",
-        "type": "Optional type and other metadata with any key."
-      },
-      "<command2>": {
-        "description": "Required description of the command"
-      }
-    }
+    "commands": {}
   }
 }

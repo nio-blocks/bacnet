@@ -1,7 +1,7 @@
 {
-  "namespace/BlockName": {
+  "nio/ReadProperty": {
     "language": "Python",
-    "version": "0.0.1",
-    "reference": "github.com/<organization>/<repo>@v0.0.1"
+    "url": "git://github.com/tyoungNIO/bacnet.git",
+    "version": "0.1.0"
   }
 }
