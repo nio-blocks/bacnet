@@ -69,7 +69,7 @@ class TestReadProperty(NIOBlockTestCase):
             objectIdentifier=obj_id, propertyIdentifier=config['property_id'])
         mock_iocb.assert_called_once_with(req_obj)
         test_app.request_io.assert_called_once_with(test_iocb)
-        test_iocb.wait.assert_called_once_with()
+        test_iocb.wait.assert_called_once_with(timeout=blk.timeout())
 
         blk.stop()
         mock_stop.assert_called_once_with()

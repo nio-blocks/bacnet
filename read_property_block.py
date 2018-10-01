@@ -32,17 +32,20 @@ class ReadProperty(EnrichSignals, Block):
     results_field = StringProperty(title='Results Field',
                                    default='value',
                                    order=15)
+    timeout = IntProperty(title='Request Timeout',
+                          default=1,
+                          order=20)
     my_address = StringProperty(title='My Address',
                                 default='[[NIOHOST]]:47808',
-                                order=20,
+                                order=21,
                                 advanced=True)
     my_object_instance = IntProperty(title='My Object Instance',
                                      default=1000,
-                                     order=21,
+                                     order=22,
                                      advanced=True)
     my_vendor_id = IntProperty(title='My Vendor ID',
                                default=1999,
-                               order=22,
+                               order=23,
                                advanced=True)
     version = VersionProperty('0.1.0')
 
@@ -117,7 +120,7 @@ class ReadProperty(EnrichSignals, Block):
         self.application.request_io(iocb)
         self.logger.debug('Request for {}:{}{} sent to {}'\
                           .format(object_type, instance_num, idx_str, address))
-        iocb.wait()
+        iocb.wait(timeout=self.timeout())
         if iocb.ioError:
             raise Exception(iocb.ioError)
         elif iocb.ioResponse:
@@ -140,5 +143,5 @@ class ReadProperty(EnrichSignals, Block):
                 value = apdu.propertyValue.cast_out(datatype)
             return value
         else:
-            raise ValueError('Received an empty response, '\
-                             'this really shouldn\'t have happened.')
+            raise Exception('Request to {} timed out after {} seconds'\
+                             .format(address, self.timeout()))
