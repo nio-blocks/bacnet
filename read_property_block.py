@@ -85,7 +85,6 @@ class ReadProperty(EnrichSignals, Block):
                     'instance_num': self.instance_num(signal),
                     'property_id': self.property_id(signal),
                     'array_index': self.array_index(signal),
-                    
                 },
             }
             new_signal = self.get_output_signal(new_signal_dict, signal)
