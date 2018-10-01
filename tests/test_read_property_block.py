@@ -63,7 +63,8 @@ class TestReadProperty(NIOBlockTestCase):
         self.assertEqual(blk.device.objectIdentifier[1], blk.object_identifer)
         self.assertEqual(blk.device.vendorIdentifier, blk.my_vendor_id())
         mock_app.assert_called_once_with(blk.device, blk.my_address())
-        mock_run.assert_called_once_with()
+        # kwargs to run suppress warnings from bacpypes logging
+        mock_run.assert_called_once_with(sigterm=None, sigusr1=None)
         blk.process_signals([Signal({'pi': 3.14})])
         mock_request.assert_called_once_with(
             objectIdentifier=obj_id, propertyIdentifier=config['property_id'])

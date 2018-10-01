@@ -68,7 +68,9 @@ class ReadProperty(EnrichSignals, Block):
         self.logger.debug('LocalDeviceObject created with objectIdentifier {}'
                           .format(self.object_identifer))
         self.application = BIPSimpleApplication(self.device, self.my_address())
-        self._thread = spawn(run)
+        # kwargs to run suppress warnings from bacpypes logging
+        kwargs = {'sigterm': None, 'sigusr1': None}
+        self._thread = spawn(run, **kwargs)
         self.logger.debug('BACNet/IP Application started at {}'\
                           .format(self.my_address()))
 
