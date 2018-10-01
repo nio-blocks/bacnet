@@ -77,6 +77,7 @@ class TestReadProperty(NIOBlockTestCase):
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
             {
+                'pi': 3.14,
                 config['results_field']: 'w00t',
                 'details': {
                     'address': config['address'],
@@ -84,7 +85,6 @@ class TestReadProperty(NIOBlockTestCase):
                     'instance_num': config['instance_num'],
                     'property_id': config['property_id'],
                     'array_index': config['array_index'],
-                'pi': 3.14,
                 },
             },
         )
