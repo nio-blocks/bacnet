@@ -1,6 +1,6 @@
 ReadProperty
 ============
-Read properties from a BACNet/IP device. This block does not respond to any `whois` nor data-sharing requests. For every signal processed, a new requst is made to the target device and a single value read.
+Read properties from a BACNet/IP device. This block does not respond to any `whois` nor data-sharing requests, and requires an address for the target device as discovery is not supported. For every signal processed, a new requst is made to the target device and a single value read.
 
 Properties
 ----------
