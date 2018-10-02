@@ -1,4 +1,6 @@
-# bacpypes hijacks _root logger, take it back!
+# Bacpypes sets _root_logger to DEBUG, this resets it after bacpypes has
+# finished importing.
+# This may cause other nio threads to momentarily log at DEBUG level.
 import logging
 _root_logger = logging.getLogger()
 _root_logger_level = _root_logger.level
@@ -11,6 +13,7 @@ from bacpypes.object import get_datatype
 from bacpypes.pdu import Address
 from bacpypes.primitivedata import Unsigned, ObjectIdentifier
 _root_logger.setLevel(_root_logger_level)
+
 from nio import Block, Signal
 from nio.block.mixins.enrich.enrich_signals import EnrichSignals
 from nio.properties import Property, IntProperty, StringProperty, \
