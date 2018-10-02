@@ -60,8 +60,6 @@ class TestReadProperty(NIOBlockTestCase):
 
         blk.start()
         self.assertTrue(isinstance(blk.device, LocalDeviceObject))
-        self.assertEqual(blk.device.objectIdentifier[1], blk.object_identifer)
-        self.assertEqual(blk.device.vendorIdentifier, blk.my_vendor_id())
         mock_app.assert_called_once_with(blk.device, blk.my_address())
         # kwargs to run suppress warnings from bacpypes logging
         mock_run.assert_called_once_with(sigterm=None, sigusr1=None)
@@ -143,28 +141,3 @@ class TestReadProperty(NIOBlockTestCase):
                 },
             },
         )
-
-    def test_my_config(self,
-                       mock_stop,
-                       mock_run,
-                       mock_app,
-                       mock_iocb,
-                       mock_request,
-                       mock_identifier,
-                       mock_get_datatype,
-                       mock_address):
-        """ Invalid configurations are handled"""
-        config = {
-            'address': 'some_ip:some_port',
-            'object_type': 'some_type',
-            'instance_num': 42,
-            'property_id': 'some_property',
-            'array_index': None,
-            'results_field': 'some_results',
-            'my_object_instance': 2**22 - 1,  # allowed range is (0, 2**22-2)
-        }
-        blk = ReadProperty()
-        with self.assertRaises(ValueError):
-            self.configure_block(blk, config)
-        config['my_object_instance'] = 2**22 - 2  # this is allowed
-        self.configure_block(blk, config)

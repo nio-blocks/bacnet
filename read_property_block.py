@@ -42,14 +42,6 @@ class ReadProperty(EnrichSignals, Block):
                                 default='[[NIOHOST]]:47808',
                                 order=21,
                                 advanced=True)
-    my_object_instance = IntProperty(title='My Object Instance',
-                                     default=1000,
-                                     order=22,
-                                     advanced=True)
-    my_vendor_id = IntProperty(title='My Vendor ID',
-                               default=1999,
-                               order=23,
-                               advanced=True)
     version = VersionProperty('0.1.0')
 
     def __init__(self):
@@ -61,15 +53,9 @@ class ReadProperty(EnrichSignals, Block):
 
     def configure(self, context):
         super().configure(context)
-        if self.my_object_instance() not in range(2**22 - 1):
-            raise ValueError('Object Instance must be 0 thru 4194302')
-        object_type = format(8, '08b')  # BACNet DeviceObject
-        object_instance = format(self.my_object_instance(), '08b')
-        self.object_identifer = int(object_type + object_instance, base=2)
-        self.device = LocalDeviceObject(objectIdentifier=self.object_identifer,
-                                        vendorIdentifier=self.my_vendor_id())
-        self.logger.debug('LocalDeviceObject created with objectIdentifier {}'
-                          .format(self.object_identifer))
+        # object and vendor ids are required here but not used
+        self.device = LocalDeviceObject(objectIdentifier=0,
+                                        vendorIdentifier=0)
         self.application = BIPSimpleApplication(self.device, self.my_address())
         # kwargs to run suppress warnings from bacpypes logging
         kwargs = {'sigterm': None, 'sigusr1': None}
