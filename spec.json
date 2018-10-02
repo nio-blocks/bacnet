@@ -39,18 +39,6 @@
         "description": "Address to bind to receive responses from BACNet devices.",
         "default": "[[NIOHOST]]:47808"
       },
-      "my_object_instance": {
-        "title": "My Object Instance",
-        "type": "IntType",
-        "description": "22-bit integer unique to all devices on this network, used to create a 32-bit device `object_identifer`.",
-        "default": 1000
-      },
-      "my_vendor_id": {
-        "title": "My Vendor ID",
-        "type": "IntType",
-        "description": "If you have an official BACNet Vendor ID put it here, otherwise use an arbitrary integer.",
-        "default": 1999
-      },
       "object_type": {
         "title": "Object Type",
         "type": "StringType",
@@ -68,6 +56,12 @@
         "type": "StringType",
         "description": "Attribute of the outgoing signal to store the value read from the target device.",
         "default": "value"
+      },
+      "timeout": {
+        "title": "Request Timeout",
+        "type": "IntType",
+        "description": "Seconds to wait for a response from a target device before raising an exception.",
+        "default": 1
       }
     },
     "inputs": {
