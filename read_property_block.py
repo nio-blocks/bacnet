@@ -39,7 +39,7 @@ class ReadProperty(EnrichSignals, Block):
                                 default='[[NIOHOST]]:47808',
                                 order=21,
                                 advanced=True)
-    version = VersionProperty('0.1.0')
+    version = VersionProperty("0.1.0")
 
     def __init__(self):
         super().__init__()
