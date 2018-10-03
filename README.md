@@ -4,7 +4,7 @@ Read properties from a BACNet/IP device. This block does not respond to any `who
 
 Properties
 ----------
-- **address**: A string of the IP address (optional subnet mask and port number) of target device. For example, `192.168.100.100/24:47808`. Hostnames are not supported, raises `ValueError` if the supplied address cannot be parsed.
+- **address**: A string of the IP address (optional subnet mask and port number) of target device. For example, `192.168.100.100/24:47808`. Hostnames are not supported, raises `ValueError` if the supplied address cannot be parsed in CIDR notation.
 - **array_index**: If the value being read is inside an array, optionally specify the index of the desired value.
 - **enrich**: Signal Enrichment
   - *exclude_existing*: If checked (true), the attributes of the incoming signal will be excluded from the outgoing signal. If unchecked (false), the attributes of the incoming signal will be included in the outgoing signal.
@@ -21,7 +21,7 @@ Inputs
 
 Outputs
 -------
-- **default**: The same list of signals, enriched with the attribute defined by `results_field`, containing the result of this request, and key:value pairs in `details` describing the request.
+- **default**: The same list of signals, enriched with 'value', the result of this request, and key:value pairs in `details` describing the request.
 
 Commands
 --------
