@@ -1,7 +1,7 @@
 {
   "nio/ReadProperty": {
     "language": "Python",
-    "url": "git://github.com/tyoungNIO/bacnet.git",
+    "url": "git://github.com/nio-blocks/bacnet.git",
     "version": "0.1.0"
   }
 }
