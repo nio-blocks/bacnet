@@ -21,7 +21,7 @@ from nio.properties import Property, IntProperty, StringProperty, \
 from nio.util.threading import spawn
 
 
-class ReadProperty(EnrichSignals, Block):
+class BACNetReadProperty(EnrichSignals, Block):
 
     address = StringProperty(title='Address',
                              default='<ip_address> [/<net_mask>] [:<port>]',
