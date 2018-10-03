@@ -38,7 +38,6 @@ class TestReadProperty(NIOBlockTestCase):
             'instance_num': 42,
             'property_id': 'some_property',
             'array_index': None,
-            'results_field': 'some_results',
             'enrich': {
                 'exclude_existing': False,
             },
@@ -77,7 +76,7 @@ class TestReadProperty(NIOBlockTestCase):
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
             {
                 'pi': 3.14,
-                config['results_field']: 'w00t',
+                'value': 'w00t',
                 'details': {
                     'address': config['address'],
                     'object_type': config['object_type'],
@@ -104,7 +103,6 @@ class TestReadProperty(NIOBlockTestCase):
             'instance_num': '{{ $instance_num }}',
             'property_id': '{{ $property_id }}',
             'array_index': '{{ $array_index }}',
-            'results_field': '{{ $results_field }}',
         }
         signal_dict = {
             'address': 'some_ip:some_port',
@@ -112,7 +110,6 @@ class TestReadProperty(NIOBlockTestCase):
             'instance_num': 42,
             'property_id': 'some_property',
             'array_index': None,
-            'results_field': 'some_results',
         }
         mock_resp = ReadPropertyACK()
         mock_resp.objectIdentifier = [
@@ -131,7 +128,7 @@ class TestReadProperty(NIOBlockTestCase):
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
             {
-                signal_dict['results_field']: 'w00t',
+                'value': 'w00t',
                 'details': {
                     'address': signal_dict['address'],
                     'object_type': signal_dict['object_type'],

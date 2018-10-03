@@ -32,9 +32,6 @@ class ReadProperty(EnrichSignals, Block):
     array_index = Property(title='Array Index (Optional)',
                            allow_none=True,
                            order=14)
-    results_field = StringProperty(title='Results Field',
-                                   default='value',
-                                   order=15)
     timeout = IntProperty(title='Request Timeout',
                           default=1,
                           order=20)
@@ -72,7 +69,7 @@ class ReadProperty(EnrichSignals, Block):
                                self.property_id(signal),
                                self.array_index(signal))
             new_signal_dict = {
-                self.results_field(signal): value,
+                'value': value,
                 'details': {
                     'address': self.address(signal),
                     'object_type': self.object_type(signal),

@@ -13,7 +13,6 @@ Properties
 - **my_address**: Address to bind to receive responses from BACNet devices.
 - **object_type**: One of the standard BACNet Object Types (for example `analogValue`, note the use of camelCase capitalization without spaces). Vendor-defined custom-objects are not supported. Raises `ValueError` if not a recognized object type.
 - **property_id**: One of the defined Properties for this object type. Raises `ValueError` if not a valid property for this type.
-- **results_field**: Attribute of the outgoing signal to store the value read from the target device.
 - **timeout**: Seconds to wait for a response from a target device before raising an exception.
 
 Inputs

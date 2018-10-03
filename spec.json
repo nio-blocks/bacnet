@@ -51,12 +51,6 @@
         "description": "One of the defined Properties for this object type. Raises `ValueError` if not a valid property for this type.",
         "default": null
       },
-      "results_field": {
-        "title": "Results Field",
-        "type": "StringType",
-        "description": "Attribute of the outgoing signal to store the value read from the target device.",
-        "default": "value"
-      },
       "timeout": {
         "title": "Request Timeout",
         "type": "IntType",
