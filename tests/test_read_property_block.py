@@ -9,17 +9,17 @@ _root_logger.setLevel(_root_logger_level)
 from nio.block.terminals import DEFAULT_TERMINAL
 from nio.signal.base import Signal
 from nio.testing.block_test_case import NIOBlockTestCase
-from ..read_property_block import ReadProperty
+from ..read_property_block import BACNetReadProperty
 
 
-@patch(ReadProperty.__module__ + '.Address')
-@patch(ReadProperty.__module__ + '.get_datatype')
-@patch(ReadProperty.__module__ + '.ObjectIdentifier')
-@patch(ReadProperty.__module__ + '.ReadPropertyRequest')
-@patch(ReadProperty.__module__ + '.IOCB')
-@patch(ReadProperty.__module__ + '.BIPSimpleApplication')
-@patch(ReadProperty.__module__ + '.run')
-@patch(ReadProperty.__module__ + '.stop')
+@patch(BACNetReadProperty.__module__ + '.Address')
+@patch(BACNetReadProperty.__module__ + '.get_datatype')
+@patch(BACNetReadProperty.__module__ + '.ObjectIdentifier')
+@patch(BACNetReadProperty.__module__ + '.ReadPropertyRequest')
+@patch(BACNetReadProperty.__module__ + '.IOCB')
+@patch(BACNetReadProperty.__module__ + '.BIPSimpleApplication')
+@patch(BACNetReadProperty.__module__ + '.run')
+@patch(BACNetReadProperty.__module__ + '.stop')
 class TestReadProperty(NIOBlockTestCase):
 
     def test_read_property(self,
@@ -54,7 +54,7 @@ class TestReadProperty(NIOBlockTestCase):
                                                        ioResponse=mock_resp)
         test_app = mock_app.return_value = MagicMock()
 
-        blk = ReadProperty()
+        blk = BACNetReadProperty()
         self.configure_block(blk, config)
 
         blk.start()
@@ -119,7 +119,7 @@ class TestReadProperty(NIOBlockTestCase):
         test_iocb = mock_iocb.return_value = MagicMock(ioError=None,
                                                        ioResponse=mock_resp)
 
-        blk = ReadProperty()
+        blk = BACNetReadProperty()
         self.configure_block(blk, config)
         blk.start()
         blk.process_signals([Signal(signal_dict)])
